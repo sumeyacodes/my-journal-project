@@ -29,7 +29,22 @@ export async function getEntries(){
     return entries
 }
 
-export async function addJournalEntry( {entryMessage} ) {
+// probably better in it's own seperate middleware file
+export function validateEntryMessage(req, res, next) {
+  const entryMessage = req.body.entryMessage;
+
+  if (!entryMessage || entryMessage.trim() === '') {
+    return res.status(400).json({
+      status: "Error: Message is required - please provide a valid entry.",
+      statusURL: "https://http.cat/400",
+      payload: null,
+    });
+  }
+    // if validation passes, proceed
+  next();
+}
+
+export async function addJournalEntry(entryMessage) {
     try {
         const entries = await getEntries();
         const dateAdded = new Date()
@@ -46,6 +61,6 @@ export async function addJournalEntry( {entryMessage} ) {
 
       } catch (error) {
         console.error("Error adding journal entry:", error);
-        return error;
+        throw new Error("An error occurred while adding the journal entry.");
       }
     }

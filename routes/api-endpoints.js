@@ -1,4 +1,4 @@
-import { addJournalEntry } from "../utils/helper-functions.js";
+import { addJournalEntry, validateEntryMessage } from "../utils/helper-functions.js";
 import express from "express";
 
 const router = express.Router();
@@ -8,45 +8,37 @@ router.get("/", async function (req, res) {
   res.send("Hello Journal");
 });
 
-// POST request for adding a journal entry
-router.post("/post", async function (req, res) {
+// POST request for journal entry & input validation middleware
+router.post("/post", validateEntryMessage, async function (req, res) {
   try {
-    const entryMessage = req.body; 
 
-     // throw error if message is invalid or empty
-    if (!entryMessage || entryMessage === ' ') {
-      return res.status(400).json({ 
-        status: "Message is required",
-        statusURL:  "https://http.cat/400"
-     });
-    }
-
-    // if not, send req body to be processed
+    const entryMessage = req.body.entryMessage; 
     const addedEntry = await addJournalEntry(entryMessage); 
 
-    // success message
     if (addedEntry) {
         return res.status(201).json({ 
-            status: "Journal entry added", 
+            status: "Success: Journal entry added", 
             statusURL:  "https://http.cat/201", 
-            addedEntry,
+            payload: addedEntry,
          });
     }  else {
-        // just in case any issues with input
         return res.status(400).json({ 
-            status: "Error: invalid input - please try again." ,
-            statusURL: "https://http.cat/400"
+            status: "Error: Invalid input - please try again." ,
+            statusURL: "https://http.cat/400",
+            payload: null,
+
         });
     }
 
   } catch (error) {
-    // server related errors
     console.error("Error handling POST request:", error);
 
     return res.status(500).json( {
-        status: "Internal Server Error: An unexpected error occurred while handling POST request. Please try again.", 
-        error, 
-        statusURL: "https://http.cat/500"
+        status: "Server Error: An unexpected error occurred while handling POST request. Please try again.",
+        error: error.message,
+        statusURL: "https://http.cat/500",
+        payload: null,
+
     });
   }
 });
