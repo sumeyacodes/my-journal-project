@@ -11,7 +11,6 @@ router.get("/", async function (req, res) {
 // POST request for journal entry & input validation middleware
 router.post("/post", validateEntryMessage, async function (req, res) {
   try {
-
     const entryMessage = req.body.entryMessage; 
     const addedEntry = await addJournalEntry(entryMessage); 
 

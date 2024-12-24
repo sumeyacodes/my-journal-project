@@ -29,7 +29,7 @@ export async function getEntries(){
     return entries
 }
 
-// probably better in it's own seperate middleware file
+// place this in separate middleware file ?
 export function validateEntryMessage(req, res, next) {
   const entryMessage = req.body.entryMessage;
 
@@ -37,22 +37,22 @@ export function validateEntryMessage(req, res, next) {
     return res.status(400).json({
       status: "Error: Message is required - please provide a valid entry.",
       statusURL: "https://http.cat/400",
-      payload: null,
+      payload: null
     });
   }
-    // if validation passes, proceed
+    // proceed if input is valid
   next();
 }
 
 export async function addJournalEntry(entryMessage) {
     try {
         const entries = await getEntries();
-        const dateAdded = new Date()
+        const dateAdded = new Date();
 
         const newEntry = {
-            date: format(dateAdded, 'dd/MM/yyyy'),
-            timestamp:  format(dateAdded.getTime(), 'hh:mm:ss a'),
-            entryMessage,
+          date: format(dateAdded, 'dd/MM/yyyy'),
+          timestamp:  format(dateAdded.getTime(), 'hh:mm:ss a'),
+          entryMessage
         }
 
         entries.push(newEntry);
@@ -61,6 +61,5 @@ export async function addJournalEntry(entryMessage) {
 
       } catch (error) {
         console.error("Error adding journal entry:", error);
-        throw new Error("An error occurred while adding the journal entry.");
       }
     }
