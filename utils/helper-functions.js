@@ -1,1 +1,1 @@
-import { entries } from "../db/journal-entries";
+import { entries } from "../database/journal-entries.json";

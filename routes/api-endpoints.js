@@ -1,5 +1,13 @@
+// Import the Express module, a web framework for Node.js
 import express from "express";
 
-const messageRouter = express.Router();
+// Create a new router instance for handling routes
+const router = express.Router();
 
-export default messageRouter;
+// Testing connection
+router.get("/", async function (req, res) {
+    res.send("Hello world");
+});
+
+// Export the router for use in other modules
+export default router;

@@ -1,17 +1,17 @@
-// Import the express module which is a web framework for Node.js
+// Import the Express module, a web framework for Node.js
 import express from "express";
 
-// Import the messageRouter from the specified path
-import messageRouter from "./routes/api-endpoints";
+// Import the router for handling API endpoints
+import router from "./routes/api-endpoints.js";
 
 // Create an instance of an Express application
 const app = express();
 
-// Middleware to parse incoming JSON requests and make it available under req.body
+// Middleware to parse incoming JSON requests and attach the data to req.body
 app.use(express.json());
 
-// Use the messageRouter for any requests to the /message path
-app.use("/message", messageRouter);
+// Use the imported router for handling routes starting from the root ("/")
+app.use("/", router);
 
-// Export the app instance so it can be used in other files
+// Export the app instance for use in other modules
 export default app;
